@@ -1,18 +1,23 @@
-export default function Dropdown({ handleChange }) {
+export default function Dropdown({ handleChange, name, options, label }) {
   return (
     <div>
-      <label htmlFor="rovers">Choose a rover: </label>
+      <label htmlFor={name}> {label}</label>
 
       <select
+        required
         onChange={(e) => {
           handleChange(e.target.value);
         }}
-        name="rovers"
-        id="rovers"
+        name={name}
+        id={name}
       >
-        <option value="Curiosity">Curiosity</option>
-        <option value="Opportunity">Opportunity</option>
-        <option value="Spirit">Spirit</option>
+        {options.map((option) => {
+          return (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          );
+        })}
       </select>
     </div>
   );
