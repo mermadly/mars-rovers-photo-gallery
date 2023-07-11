@@ -106,14 +106,18 @@ export default function RootLayout({ children }) {
   };
   const handlePage = (e) => {
     console.log(e.target.value);
-    e.target.value == "back" ? (page > 1 ? setPage(page - 1) : null) : null;
-
-    e.target.value == "next" ? setPage(page + 1) : null;
-
+    if (e.target.value === "back") {
+      setPage((prevPage) => prevPage - 1);
+    }
+    if (e.target.value === "next") {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+  useEffect(() => {
     camera == "All cameras"
       ? getImages() && console.log("getImages")
       : getPhotoByCamera() && console.log("getbycamera");
-  };
+  }, [page]);
 
   return (
     <html lang="en">
@@ -179,10 +183,20 @@ export default function RootLayout({ children }) {
             />
           );
         })}
-        <button type="button" value="back" onClick={handlePage}>
+        <button
+          type="button"
+          value="back"
+          onClick={handlePage}
+          disabled={page == 1}
+        >
           Back
         </button>
-        <button type="button" value="next" onClick={handlePage}>
+        <button
+          type="button"
+          value="next"
+          onClick={handlePage}
+          disabled={photosArray.length < 25}
+        >
           Next
         </button>
       </body>
