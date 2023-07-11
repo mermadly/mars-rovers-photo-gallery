@@ -11,7 +11,8 @@ export default function RootLayout({ children }) {
   const [date, setDate] = useState();
   const [photosArray, setPhotosArray] = useState([]);
   const [camera, setCamera] = useState("All cameras");
-  const [dateType, setDateType] = useState("Sol");
+  const [dateType, setDateType] = useState("sol");
+  const [page, setPage] = useState(1);
 
   const cameraByRover = {
     Curiosity: [
@@ -35,9 +36,13 @@ export default function RootLayout({ children }) {
     setPhotosArray([]);
   };
   const handleDate = (e) => {
-    const date = new Date(e);
-    const formattedDate = date.toISOString().split("T")[0];
-    setDate(formattedDate);
+    if (dateType == "earth_date") {
+      const date = new Date(e);
+      const formattedDate = date.toISOString().split("T")[0];
+      setDate(formattedDate);
+    } else {
+      setDate(e.target.value);
+    }
   };
   useEffect(() => {
     const getDates = async () => {
@@ -46,7 +51,7 @@ export default function RootLayout({ children }) {
       );
       const { rovers } = await res.json();
       let roversData = {};
-      rovers.map((rover) => {
+      rovers?.map((rover) => {
         const roverName = rover.name;
         const roverData = {
           [roverName]: {
@@ -65,24 +70,29 @@ export default function RootLayout({ children }) {
   }, []);
 
   const getImages = async () => {
+    console.log(dateType, date);
     const res = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?earth_date=${date}&&api_key=gagtDJwzdcAoAzeAfiQsv6Huoakig7CPKNxOehd9`
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?${dateType}=${date}&page=${page}&api_key=gagtDJwzdcAoAzeAfiQsv6Huoakig7CPKNxOehd9`
     );
     const { photos } = await res.json();
-    setPhotosArray(photos);
+    console.log("fetch", photos);
+
+    setPhotosArray(photos || []);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("hola", camera);
+    setPage(1);
     camera == "All cameras" ? getImages() : getPhotoByCamera();
   };
 
   const getPhotoByCamera = async () => {
     const res = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?earth_date=${date}&camera=${camera}&api_key=gagtDJwzdcAoAzeAfiQsv6Huoakig7CPKNxOehd9`
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?${dateType}=${date}&page=${page}&camera=${camera}&api_key=gagtDJwzdcAoAzeAfiQsv6Huoakig7CPKNxOehd9`
     );
     const { photos } = await res.json();
-    console.log("funcionó el fetch de camara", photos);
+    console.log("photos", photos);
     setPhotosArray(photos);
   };
 
@@ -92,7 +102,17 @@ export default function RootLayout({ children }) {
 
   const handleChangeDateType = (e) => {
     console.log(e);
-    setDateType(e);
+    e == "Sol" ? setDateType("sol") : setDateType("earth_date");
+  };
+  const handlePage = (e) => {
+    console.log(e.target.value);
+    e.target.value == "back" ? (page > 1 ? setPage(page - 1) : null) : null;
+
+    e.target.value == "next" ? setPage(page + 1) : null;
+
+    camera == "All cameras"
+      ? getImages() && console.log("getImages")
+      : getPhotoByCamera() && console.log("getbycamera");
   };
 
   return (
@@ -113,7 +133,7 @@ export default function RootLayout({ children }) {
             label={"Choose a type of date: "}
           />
           {Object.keys(roverDates).length > 0 ? (
-            dateType == "Earth Date" ? (
+            dateType == "earth_date" ? (
               <>
                 <label htmlFor="date">Pick an Earth Date: </label>
                 <DatePicker
@@ -135,6 +155,7 @@ export default function RootLayout({ children }) {
                   name="number"
                   min="0"
                   max={roverDates[rover].sol}
+                  onChange={handleDate}
                 />
               </>
             )
@@ -148,18 +169,22 @@ export default function RootLayout({ children }) {
           <input type="submit" value="Submit" />
         </form>
 
-        {photosArray.length > 0
-          ? photosArray.map((photo) => {
-              return (
-                <img
-                  key={photo.id}
-                  src={photo.img_src}
-                  alt=""
-                  style={{ maxWidth: "250px" }}
-                />
-              );
-            })
-          : null}
+        {photosArray?.map((photo) => {
+          return (
+            <img
+              key={photo.id}
+              src={photo.img_src}
+              alt=""
+              style={{ maxWidth: "250px" }}
+            />
+          );
+        })}
+        <button type="button" value="back" onClick={handlePage}>
+          Back
+        </button>
+        <button type="button" value="next" onClick={handlePage}>
+          Next
+        </button>
       </body>
     </html>
   );
