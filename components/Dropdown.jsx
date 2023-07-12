@@ -1,3 +1,5 @@
+import "../styles.css";
+
 export default function Dropdown({ handleChange, name, options, label }) {
   return (
     <div>

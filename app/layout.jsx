@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import { Calendar } from "react-multi-date-picker";
 import Dropdown from "../components/Dropdown";
+import Button from "../components/Button";
+import "../styles.css";
 
 export default function RootLayout({ children }) {
   const [roverDates, setRoverDates] = useState({});
@@ -172,33 +174,31 @@ export default function RootLayout({ children }) {
           />
           <input type="submit" value="Submit" />
         </form>
+        <div className="photo-gallery">
+          {photosArray?.map((photo) => {
+            return (
+              <img
+                key={photo.id}
+                src={photo.img_src}
+                alt=""
+                style={{ maxWidth: "250px" }}
+              />
+            );
+          })}
+        </div>
 
-        {photosArray?.map((photo) => {
-          return (
-            <img
-              key={photo.id}
-              src={photo.img_src}
-              alt=""
-              style={{ maxWidth: "250px" }}
-            />
-          );
-        })}
-        <button
-          type="button"
-          value="back"
-          onClick={handlePage}
+        <Button
+          value={"back"}
+          handlePage={handlePage}
           disabled={page == 1}
-        >
-          Back
-        </button>
-        <button
-          type="button"
-          value="next"
+          label={"Back"}
+        />
+        <Button
+          value={"next"}
           onClick={handlePage}
           disabled={photosArray.length < 25}
-        >
-          Next
-        </button>
+          label={"Next"}
+        />
       </body>
     </html>
   );
