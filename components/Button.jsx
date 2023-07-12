@@ -6,9 +6,9 @@ export default function Button({ value, handlePage, disabled, label }) {
         value={value}
         onClick={handlePage}
         disabled={disabled}
-        className={value}
+        className={`${value} ${disabled ? "disabled" : null}`}
       >
-        {label}
+        {/* {label} */}
       </button>
     </div>
   );

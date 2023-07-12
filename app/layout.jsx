@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import { Calendar } from "react-multi-date-picker";
-import Dropdown from "../components/Dropdown";
 import Button from "../components/Button";
 import "../styles.css";
+import Form from "../components/Form";
+import Dropdown from "../components/Dropdown";
 
 export default function RootLayout({ children }) {
   const [roverDates, setRoverDates] = useState({});
@@ -82,8 +83,8 @@ export default function RootLayout({ children }) {
     setPhotosArray(photos || []);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
     console.log("hola", camera);
     setPage(1);
     camera == "All cameras" ? getImages() : getPhotoByCamera();
@@ -125,6 +126,17 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <h1>Mars Rovers Photo Gallery</h1>
+        <Form
+          handleSubmit={handleSubmit}
+          handleChangeRover={handleChangeRover}
+          roverDates={roverDates}
+          rover={rover}
+          date={date}
+          handleDate={handleDate}
+          cameraByRover={cameraByRover}
+          handleChangeDateType={handleChangeDateType}
+          handleChangeCamera={handleChangeCamera}
+        />
         <form onSubmit={handleSubmit}>
           <Dropdown
             handleChange={handleChangeRover}
@@ -150,7 +162,7 @@ export default function RootLayout({ children }) {
                 />
               </>
             ) : (
-              <>
+              <div>
                 <label htmlFor="Sol date">
                   Sol date (max {roverDates[rover].sol}):
                 </label>
@@ -163,7 +175,7 @@ export default function RootLayout({ children }) {
                   max={roverDates[rover].sol}
                   onChange={handleDate}
                 />
-              </>
+              </div>
             )
           ) : null}
           <Dropdown
@@ -186,7 +198,6 @@ export default function RootLayout({ children }) {
             );
           })}
         </div>
-
         <Button
           value={"back"}
           handlePage={handlePage}
