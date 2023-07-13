@@ -108,7 +108,7 @@ export default function RootLayout({ children }) {
     e == "Sol" ? setDateType("sol") : setDateType("earth_date");
   };
   const handlePage = (e) => {
-    console.log(e.target.value);
+    console.log("click");
     if (e.target.value === "back") {
       setPage((prevPage) => prevPage - 1);
     }
@@ -136,6 +136,7 @@ export default function RootLayout({ children }) {
           cameraByRover={cameraByRover}
           handleChangeDateType={handleChangeDateType}
           handleChangeCamera={handleChangeCamera}
+          dateType={dateType}
         />
         <form onSubmit={handleSubmit}>
           <Dropdown

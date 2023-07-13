@@ -4,7 +4,9 @@ export default function Button({ value, handlePage, disabled, label }) {
       <button
         type="button"
         value={value}
-        onClick={handlePage}
+        onClick={(e) => {
+          handlePage(e);
+        }}
         disabled={disabled}
         className={`${value} ${disabled ? "disabled" : null}`}
       >
