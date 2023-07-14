@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DatePicker from "react-multi-date-picker";
 import { Calendar } from "react-multi-date-picker";
 import Button from "../components/Button";
 import "../styles.css";
 import Form from "../components/Form";
-import Dropdown from "../components/Dropdown";
+import Gallery from "../components/Gallery";
 
 export default function RootLayout({ children }) {
   const [roverDates, setRoverDates] = useState({});
@@ -138,67 +137,7 @@ export default function RootLayout({ children }) {
           handleChangeCamera={handleChangeCamera}
           dateType={dateType}
         />
-        <form onSubmit={handleSubmit}>
-          <Dropdown
-            handleChange={handleChangeRover}
-            name={"rovers"}
-            options={["Curiosity", "Opportunity", "Spirit"]}
-            label={"Choose a rover:"}
-          />
-          <Dropdown
-            handleChange={handleChangeDateType}
-            name={"rovers"}
-            options={["Sol", "Earth Date"]}
-            label={"Choose a type of date: "}
-          />
-          {Object.keys(roverDates).length > 0 ? (
-            dateType == "earth_date" ? (
-              <>
-                <label htmlFor="date">Pick an Earth Date: </label>
-                <DatePicker
-                  value={date}
-                  onChange={handleDate}
-                  minDate={roverDates[rover].minEarth}
-                  maxDate={roverDates[rover].maxEarth}
-                />
-              </>
-            ) : (
-              <div>
-                <label htmlFor="Sol date">
-                  Sol date (max {roverDates[rover].sol}):
-                </label>
-
-                <input
-                  type="number"
-                  id="day"
-                  name="number"
-                  min="0"
-                  max={roverDates[rover].sol}
-                  onChange={handleDate}
-                />
-              </div>
-            )
-          ) : null}
-          <Dropdown
-            handleChange={handleChangeCamera}
-            name={"cameras"}
-            options={cameraByRover[rover]}
-            label={"Choose a camera: "}
-          />
-          <input type="submit" value="Submit" />
-        </form>
-        <div className="photo-gallery">
-          {photosArray?.map((photo) => {
-            return (
-              <img
-                key={photo.id}
-                src={photo.img_src}
-                alt=""
-                style={{ maxWidth: "250px" }}
-              />
-            );
-          })}
-        </div>
+        <Gallery photosArray={photosArray} />
         <Button
           value={"back"}
           handlePage={handlePage}
@@ -207,7 +146,7 @@ export default function RootLayout({ children }) {
         />
         <Button
           value={"next"}
-          onClick={handlePage}
+          handlePage={handlePage}
           disabled={photosArray.length < 25}
           label={"Next"}
         />

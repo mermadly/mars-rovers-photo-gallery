@@ -1,4 +1,5 @@
 import Dropdown from "./Dropdown";
+import DatePicker from "react-multi-date-picker";
 
 export default function Form({
   handleSubmit,
@@ -13,11 +14,7 @@ export default function Form({
   dateType,
 }) {
   return (
-    <form
-      onSubmit={() => {
-        handleSubmit;
-      }}
-    >
+    <form onSubmit={handleSubmit}>
       <Dropdown
         handleChange={handleChangeRover}
         name={"rovers"}
