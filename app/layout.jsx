@@ -31,21 +31,6 @@ export default function RootLayout({ children }) {
     Spirit: ["All cameras", "FHAZ", "RHAZ", "NAVCAM", "PANCAM"],
   };
 
-  const handleChangeRover = (name) => {
-    setRover(name);
-    setDate();
-    setCamera("All cameras");
-    setPhotosArray([]);
-  };
-  const handleDate = (e) => {
-    if (dateType == "earth_date") {
-      const date = new Date(e);
-      const formattedDate = date.toISOString().split("T")[0];
-      setDate(formattedDate);
-    } else {
-      setDate(e.target.value);
-    }
-  };
   useEffect(() => {
     const getDates = async () => {
       const res = await fetch(
@@ -71,15 +56,26 @@ export default function RootLayout({ children }) {
     getDates();
   }, []);
 
-  const getImages = async () => {
-    console.log(dateType, date);
-    const res = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?${dateType}=${date}&page=${page}&api_key=gagtDJwzdcAoAzeAfiQsv6Huoakig7CPKNxOehd9`
-    );
-    const { photos } = await res.json();
-    console.log("fetch", photos);
+  useEffect(() => {
+    camera == "All cameras"
+      ? getImages() && console.log("getImages")
+      : getPhotoByCamera() && console.log("getbycamera");
+  }, [page]);
 
-    setPhotosArray(photos || []);
+  const handleChangeRover = (name) => {
+    setRover(name);
+    setDate();
+    setCamera("All cameras");
+    setPhotosArray([]);
+  };
+  const handleDate = (e) => {
+    if (dateType == "earth_date") {
+      const date = new Date(e);
+      const formattedDate = date.toISOString().split("T")[0];
+      setDate(formattedDate);
+    } else {
+      setDate(e.target.value);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -87,15 +83,6 @@ export default function RootLayout({ children }) {
     console.log("hola", camera);
     setPage(1);
     camera == "All cameras" ? getImages() : getPhotoByCamera();
-  };
-
-  const getPhotoByCamera = async () => {
-    const res = await fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?${dateType}=${date}&page=${page}&camera=${camera}&api_key=gagtDJwzdcAoAzeAfiQsv6Huoakig7CPKNxOehd9`
-    );
-    const { photos } = await res.json();
-    console.log("photos", photos);
-    setPhotosArray(photos);
   };
 
   const handleChangeCamera = (e) => {
@@ -115,11 +102,26 @@ export default function RootLayout({ children }) {
       setPage((prevPage) => prevPage + 1);
     }
   };
-  useEffect(() => {
-    camera == "All cameras"
-      ? getImages() && console.log("getImages")
-      : getPhotoByCamera() && console.log("getbycamera");
-  }, [page]);
+
+  const getImages = async () => {
+    console.log(dateType, date);
+    const res = await fetch(
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?${dateType}=${date}&page=${page}&api_key=gagtDJwzdcAoAzeAfiQsv6Huoakig7CPKNxOehd9`
+    );
+    const { photos } = await res.json();
+    console.log("fetch", photos);
+
+    setPhotosArray(photos || []);
+  };
+
+  const getPhotoByCamera = async () => {
+    const res = await fetch(
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?${dateType}=${date}&page=${page}&camera=${camera}&api_key=gagtDJwzdcAoAzeAfiQsv6Huoakig7CPKNxOehd9`
+    );
+    const { photos } = await res.json();
+    console.log("photos", photos);
+    setPhotosArray(photos);
+  };
 
   return (
     <html lang="en">
